@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.taylorsfan.blog.repository.PermissionMapper">
+    <resultMap id="BaseResultMap" type="permission">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="permission_name" jdbcType="VARCHAR" property="permissionName"/>
+    </resultMap>
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT * FROM permission
+    </select>
+    <select id="selectOneByPrimaryKey" resultMap="BaseResultMap">
+        SELECT * FROM permission
+        WHERE id=#{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey">
+        DELETE FROM permission
+        WHERE id=#{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" >
+        INSERT INTO permission (id,permission_name)
+        VALUES (#{permission.id},#{permission.permissionName,jdbcType=VARCHAR})
+    </insert>
+    <update id="updateByPrimaryKey">
+        UPDATE permission
+        SET permission_name = #{permission.permissionName,jdbcType=VARCHAR}
+        WHERE id=#{permission.id,jdbcType=INTEGER}
+    </update>
+    <select id="selectAllByRoleId" resultMap="BaseResultMap">
+        SELECT permission.* FROM role_permission,permission
+        WHERE role_permission.role_id=#{roleId}
+        AND permission.id=role_permission.permission_id
+    </select>
+    <select id="selectAllByUserId" resultMap="BaseResultMap">
+        SELECT DISTINCT permission.*
+        FROM user_role,role,role_permission,permission
+        WHERE user_id=#{userId} AND user_role.role_id=role.id
+        AND role.id=role_permission.role_id
+        AND permission.id=role_permission.permission_id
+    </select>
+</mapper>

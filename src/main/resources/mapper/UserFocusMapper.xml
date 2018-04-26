@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.taylorsfan.blog.repository.UserFocusMapper">
+    <insert id="insert" >
+        INSERT INTO user_focus (id,user_id,focus_id)
+        VALUES (#{userFocus.id},#{userFocus.userId,jdbcType=INTEGER},#{userFocus.focusId,jdbcType=INTEGER})
+    </insert>
+    <select id="countFocus" resultType="integer">
+        SELECT count(*) FROM user_focus
+        WHERE user_id=#{userId}
+    </select>
+    <delete id="deleteByUserId">
+        DELETE FROM user_focus
+        WHERE user_id=#{userId}
+    </delete>
+    <delete id="deleteByFocusId">
+        DELETE FROM user_focus
+        WHERE focus_id=#{focusId}
+    </delete>
+
+</mapper>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.taylorsfan.blog.repository.UserBlogMapper">
+    <insert id="insert" >
+        INSERT INTO user_blog (id,user_id,blog_id)
+        VALUES (#{userBlog.id},#{userBlog.userId,jdbcType=INTEGER},#{userBlog.blogId,jdbcType=INTEGER})
+    </insert>
+    <select id="countBlog" resultType="integer">
+        SELECT count(*) FROM user_blog
+        WHERE user_id=#{userId}
+    </select>
+    <delete id="deleteByUserId">
+        DELETE FROM user_blog
+        WHERE user_id=#{userId}
+    </delete>
+    <delete id="deleteByBlogId">
+        DELETE FROM user_blog
+        WHERE blog_id=#{blogId}
+    </delete>
+
+</mapper>

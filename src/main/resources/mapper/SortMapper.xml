@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.taylorsfan.blog.repository.SortMapper">
+    <resultMap id="BaseResultMap" type="com.taylorsfan.blog.model.Sort" >
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="sort_name" jdbcType="VARCHAR" property="sortName"/>
+    </resultMap>
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT * FROM sort
+    </select>
+    <select id="selectOneByPrimaryKey" resultMap="BaseResultMap">
+        SELECT *
+        FROM sort
+        WHERE id=#{id,jdbcType=INTEGER}
+    </select>
+    <select id="selectOneByBlogId" resultMap="BaseResultMap">
+        SELECT sort.* FROM sort,sort_blog
+        WHERE blog_id=#{blogId} AND sort.id=sort_blog.sort_id
+    </select>
+    <delete id="deleteByPrimaryKey">
+        DELETE FROM sort
+        WHERE id=#{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" >
+        INSERT INTO sort (id,sort_name)
+        VALUES (#{sort.id},#{sort.sortName,jdbcType=VARCHAR})
+    </insert>
+    <update id="updateByPrimaryKey">
+        UPDATE sort
+        SET sort_name = #{sort.sortName,jdbcType=VARCHAR}
+        WHERE id=#{sort.id,jdbcType=INTEGER}
+    </update>
+</mapper>

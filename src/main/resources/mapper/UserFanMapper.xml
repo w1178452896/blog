@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.taylorsfan.blog.repository.UserFanMapper">
+    <insert id="insert" >
+        INSERT INTO user_fan (id,user_id,fan_id)
+        VALUES (#{userFan.id},#{userFan.userId,jdbcType=INTEGER},#{userFan.fanId,jdbcType=INTEGER})
+    </insert>
+    <select id="countFan" resultType="int">
+        SELECT count(*) FROM user_fan
+        WHERE user_id=#{userId}
+    </select>
+    <delete id="deleteByUserId">
+        DELETE FROM user_fan
+        WHERE user_id=#{userId}
+    </delete>
+    <delete id="deleteByFanId">
+        DELETE FROM user_fan
+        WHERE fan_id=#{fanId}
+    </delete>
+</mapper>

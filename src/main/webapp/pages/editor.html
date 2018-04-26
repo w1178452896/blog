@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>编辑</title>
+    <link rel="stylesheet" href="../css/editormd.min.css">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/editor.css">
+    <script src="../js/jquery-3.3.1.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/editormd.min.js"></script>
+</head>
+<style>
+    .editormd {
+        border: none;
+        border-radius: 8px;
+    }
+</style>
+<body class="baitian">
+<div class="container-fluid">
+    <div class="row home">
+        <h1><b><a href="/">Blog</a></b></h1>
+    </div>
+    <div class="setting">
+        <span class="glyphicon glyphicon-edit" style="color: #f9f9f9; font-size: 30px; padding: 13px;"></span>
+        <div class="writeHelp" id="writeHelp">
+            <h4 class="text-center"><span class="glyphicon glyphicon-cog"></span> 设置</h4>
+            <div class="form-group" style="margin-bottom: 30px">
+                <label>主题</label>
+                <div class="btn-group" data-toggle="buttons">
+                    <label class="btn btn-default active" onclick="chooseTheme('sun');">
+                        <input type="radio" name="options" id="sun" autocomplete="off" checked><span class="fa fa-sun-o"></span>
+                    </label>
+                    <label class="btn btn-default" onclick="chooseTheme('moon')">
+                        <input type="radio" name="options" id="moon" autocomplete="off"><span class="fa fa-moon-o"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="title">文章标题</label>
+                <input type="text" class="form-control" id="title">
+            </div>
+            <div class="form-group">
+                <label for="sort">文章分类</label>
+                <select class="form-control" id="sort">
+                    <option value="JAVA">JAVA</option>
+                    <option value="C++">C++</option>
+                    <option value="生活">生活</option>
+                    <option value="随笔">随笔</option>
+                </select>
+            </div>
+            <div class="input-group" style="margin-bottom: 15px;">
+                <input type="text" name="newSort" class="form-control" placeholder="自定义分类">
+                <span class="input-group-btn"><button class="btn btn-default" type="button" onclick="newSort()">确定</button></span>
+            </div>
+            <div>
+                <button type="button" class="btn btn-primary" id="save"  onclick="savelocal();"><span class="glyphicon glyphicon-floppy-saved"></span> 保存草稿</button>
+                <button type="button" class="btn btn-info" id="caogao" onclick="openCaogao();"><span class="glyphicon glyphicon-duplicate"></span> 草稿管理</button>
+            </div>
+            <div style="padding-bottom: 20px; margin-top: 50px" class="text-center">
+                <a href="javascript:$.proxy(editor.toolbarHandlers.help, editor)();"><span>Markdown使用帮助</span></a>
+            </div>
+            <div class="btn-group pull-right" role="group">
+                <button type="button" class="btn btn-default" id="exitEditor"><a href="/" style="color: #000000"><span class="fa fa-reply"></span> 退出</a></button>
+                <button type="button" class="btn btn-default" id="share" onclick="share()"><span class="fa fa-paper-plane"></span> 发布</button>
+            </div>
+        </div>
+        <div class="writeCaogao" id="writeCaogao">
+            <h4 class="text-center"><span class="glyphicon glyphicon-duplicate"></span> 草稿管理</h4>
+            <div class="table-responsive" style="height: 380px">
+                <table class="table table-hover">
+                    <tr><th></th><th>标题</th><th>分类</th><th>时间</th><th><btton class="btn btn-danger btn-sm" onclick="delAll()"><span class="fa fa-trash"> </span> 清空</btton></th></tr>
+                    <tbody></tbody>
+                </table>
+                <span class="fa fa-spinner fa-spin fa-2x" id="loading" style="padding: 0px 130px"></span>
+            </div>
+            <div class="pull-right">
+                <button type="button" class="btn btn-default" id="Cexit" onclick="Cexit()"><span class="glyphicon glyphicon-arrow-right"></span> 返回</button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-8 col-sm-offset-2 col-xs-12 editor">
+            <div id="editormd">
+                <textarea style="display:none;"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="footer">
+    <div class="container">
+        <div class="row">
+            <p class="text-center">chance9077 <span class="fa fa-user"></span> 2018 </p>
+        </div>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" id="myModel">
+    <div class="modal-dialog modal-sm" style="top: 300px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h5 class="modal-title">提示</h5>
+            </div>
+            <div class="modal-body">
+                <p id="modalBody"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">确定</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        function openalert(message) {
+            $('#modalBody').html(message);
+            $('#myModel').modal();
+        }
+    </script>
+</div>
+</body>
+
+<script>
+    var editor;
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+
+        // 配置编译器
+        editor = editormd({
+            id: "editormd",
+            path: "/resources/editor/lib/",
+            imageUpload: true,
+            imageFormats: ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+            imageUploadURL: "/uploadPic",
+            //editor.md期望得到一个json格式的上传后的返回值，格式是这样的：
+            /*
+            {
+                success : 0 | 1,           // 0 表示上传失败，1 表示上传成功
+                message : "提示的信息，上传成功或上传失败及错误信息等。",
+                url     : "图片地址"        // 上传成功时才返回
+            }
+                      saveHTMLToTextarea : true,
+                      emoji : true,
+                      taskList: true,
+                      /*tocm: true,
+                      tex: true,
+                      flowChart: true,
+                      sequenceDiagram: true,*/
+            toolbarIcons: function () {
+                // Or return editormd.toolbarModes[name]; // full, simple, mini
+                // Using "||" set icons align right.
+                return ["undo", "redo", "|", "bold", "del", "italic", "quote", "ucwords", "uppercase", "lowercase", "|", "h1", "h2", "h3", "h4", "h5", "h6", "|", "list-ul", "list-ol", "hr", "|", "link", "reference-link", "image", "code", "preformatted-text", "code-block", "table", "datetime", "emoji", "html-entities", "pagebreak", "|", "goto-line", "clear", "search", "||", "watch", "preview", "fullscreen"]
+            },
+        });
+    });
+
+    //改变主题
+    function chooseTheme(o) {
+        if (o == 'moon') {
+            editor.setTheme('dark');
+            editor.setCodeMirrorTheme('lesser-dark');
+            editor.setPreviewTheme('dark');
+            $('body').attr('class', 'heiye');
+        }
+        else {
+            editor.setTheme('default');
+            editor.setCodeMirrorTheme('default');
+            editor.setPreviewTheme('default');
+            $('body').attr('class', 'baitian');
+        }
+    }
+
+    //保存到本地
+    function savelocal() {
+        var number;
+        if (localStorage.getItem('number') == null) {
+            number = 1;
+        } else {
+            number = parseInt(localStorage.getItem('number')) + 1;
+        }
+        var source = editor.getMarkdown();
+        var title = $('#title').val().substring(0, 4);
+        var sort = $('#sort').val();
+        var date = new Date();
+        date = date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate();
+        var articleDate = {title:title,sort:sort,date:date,source:source};
+        var key = 'articleDate' + '_' + number;
+        window.localStorage.setItem(key, JSON.stringify(articleDate));
+        if (localStorage.getItem(key) == null) {
+            // alert('保存失败请重试');
+            openalert('保存失败请重试');
+        } else {
+            localStorage.setItem('number', number);
+            // alert("保存成功！");
+            openalert('保存成功！');
+        }
+    }
+
+    //从本地读取
+    function getlocal() {
+        if (localStorage.getItem('number') != null && localStorage.getItem('number') != localStorage.getItem('remove')) {
+            var key = 'articleDate';
+            var number = parseInt(localStorage.getItem('number'));
+            var temp, articleDate;
+            for (var i = 1; i <= number; i++) {
+                temp = localStorage.getItem(key + '_' + i);
+                if (temp != null) {
+                    articleDate = JSON.parse(temp);
+                    $('#writeCaogao table tbody:eq(1)').append('<tr><td>' + i + '</td><td>' + articleDate.title + '</td><td>' + articleDate.sort + '</td><td>' + articleDate.date + '</td><td class="text-center"><a href="javascript:(0)" title="删除" onclick="delCg(this)"><span class="fa fa-remove"> </span></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:(0)" title="编辑" onclick="editorCg(this)"><span class="fa fa-file-text-o"> </span></a></td></tr>')
+                }
+            }
+            $('#loading').remove();
+        }
+
+    }
+
+    //打开草稿管理
+    function openCaogao() {
+        $('#writeHelp').css("display", "none");
+//        $('#writeCaogao').css("display", "block");
+        $('#writeCaogao').slideDown(300);
+        $('#writeCaogao table tbody:eq(1)').html(' ');
+        getlocal();
+    }
+    //退出草稿管理
+    function Cexit() {
+        $('#writeCaogao').css('display', 'none');
+        $('#writeHelp').css('display', 'block');
+    }
+
+    function delCg(obj) {
+        var remove;
+        if (localStorage.getItem('remove') == null) {
+            remove = 0;
+        } else  {
+            remove = parseInt(localStorage.getItem('remove'));
+        }
+        var id = $(obj).parent().parent().children().eq(0).text();
+        var key = 'articleDate' + '_' + id;
+        localStorage.removeItem(key);
+        $(obj).parent().parent().remove();
+        if (localStorage.getItem(key) == null) {
+            remove++;
+            if (localStorage.getItem('number') == remove) {
+                localStorage.removeItem('number');
+                localStorage.removeItem('remove');
+            }
+            else
+                localStorage.setItem('remove', remove);
+        }
+    }
+
+    //清空草稿
+    function delAll() {
+        localStorage.clear();
+        $('#writeCaogao table tbody:eq(1)').html(' ');
+    }
+    //编辑草稿
+    function editorCg(o) {
+        var id = $(o).parent().parent().children().eq(0).text();
+        var temp = JSON.parse(localStorage.getItem('articleDate' + '_' + id));
+        var title = temp.title;
+        var sort = temp.sort;
+        var source = temp.source;
+        $('#title').val(title);
+        $('#sort').val(sort);
+        editor.setMarkdown(source);
+    }
+    
+    function newSort() {
+        $('#sort').prepend('<option value="' + $('input[name=newSort]').val() + '" selected="selected">' + $('input[name=newSort]').val() + '</option>');
+    }
+
+    function share() {
+        var title = $('#title').val();
+        var source = editor.getMarkdown();
+        var date = new Date();
+        date = date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate();
+        $.ajax({
+            url : '/blog/insert',
+            type : 'post',
+            data : {
+                'blog.createTime' : date,
+                'blog.title' : title,
+                'blog.content' : source,
+                'sort.id' : 1
+            },
+            success : function (data) {
+                if (data.code === 200) {
+                    openalert('文章发布成功！');
+                } else
+                    openalert('文章发布失败，请重试！')
+            }
+        })
+    }
+
+
+</script>
+</html>

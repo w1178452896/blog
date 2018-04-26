@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.taylorsfan.blog.repository.RolePermissionMapper">
+    <insert id="insert" >
+        INSERT INTO role_permission (id,role_id,permission_id)
+        VALUES (#{rolePermission.id},#{rolePermission.roleId,jdbcType=INTEGER},#{rolePermission.permissionId,jdbcType=INTEGER})
+    </insert>
+    <select id="countPermission" resultType="integer">
+        SELECT count(*) permissionCount FROM role_permission
+        WHERE role_id=#{roleId}
+    </select>
+    <delete id="deleteByRoleId">
+        DELETE FROM role_permission
+        WHERE role_id=#{roleId}
+    </delete>
+    <delete id="deleteByPermissionId">
+        DELETE FROM role_permission
+        WHERE permission_id=#{permissionId}
+    </delete>
+</mapper>

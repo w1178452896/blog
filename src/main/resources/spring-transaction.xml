@@ -1,0 +1,32 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop.xsd
+		 http://www.springframework.org/schema/tx
+		 http://www.springframework.org/schema/tx/spring-tx.xsd">
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <!--事物的传播性-->
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="delete*"/>
+            <tx:method name="update*"/>
+            <tx:method name="insert*"/>
+        </tx:attributes>
+    </tx:advice>
+    <!-- 配置事务增强处理的切入点，以保证其被恰当的织入 -->
+    <aop:config proxy-target-class="true">
+        <!-- 切点 -->
+        <aop:pointcut id="modelService" expression="execution(* com.taylorsfan.blog.service.impl.*.*(..))"/>
+        <aop:pointcut id="relationService" expression="execution(* com.taylorsfan.blog.service.relation.impl.*.*(..))"/>
+        <!-- 声明式事务的切入 -->
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="modelService"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="relationService"/>
+    </aop:config>
+</beans>
+

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.taylorsfan.blog.repository.SortBlogMapper">
+    <insert id="insert">
+        INSERT INTO sort_blog (id,blog_id,sort_id)
+        VALUES (#{sortBlog.id},#{sortBlog.blogId,jdbcType=INTEGER},#{sortBlog.sortId,jdbcType=INTEGER})
+    </insert>
+    <select id="countBlog" resultType="integer">
+        SELECT count(*) blogCount FROM sort_blog
+        WHERE sort_id=#{sortId}
+    </select>
+    <delete id="deleteByBlogId">
+        DELETE FROM sort_blog
+        WHERE blog_id=#{blogId}
+    </delete>
+    <delete id="deleteBySortId">
+        DELETE FROM sort_blog
+        WHERE sort_id=#{sortId}
+    </delete>
+</mapper>

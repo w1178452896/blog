@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.taylorsfan.blog.repository.UserRoleMapper">
+    <select id="countRole">
+        SELECT count(*) FROM user_role
+        WHERE user_id=#{userId}
+    </select>
+    <insert id="insert">
+        INSERT INTO user_role (id,user_id,role_id)
+        VALUES (#{userRole.id},#{userRole.userId,jdbcType=INTEGER},#{userRole.roleId,jdbcType=INTEGER})
+    </insert>
+    <delete id="deleteByUserId">
+        DELETE FROM user_role
+        WHERE user_id=#{userId}
+    </delete>
+    <delete id="deleteByRoleId">
+        DELETE FROM user_role
+        WHERE role_id=#{roleId}
+    </delete>
+</mapper>

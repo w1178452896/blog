@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.taylorsfan.blog.repository.BlogMapper">
+    <resultMap id="BaseResultMap" type="blog">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="create_time" jdbcType="VARCHAR" property="createTime"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="content" jdbcType="VARCHAR" property="content"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+    </resultMap>
+    <select id="selectOneByPrimaryKey" resultMap="BaseResultMap">
+        SELECT * FROM blog
+        WHERE id=#{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey">
+        DELETE FROM blog
+        WHERE id=#{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" >
+        INSERT INTO blog (id,create_time,title,content,status)
+        VALUES (#{blog.id},#{blog.createTime,jdbcType=VARCHAR},#{blog.title,jdbcType=VARCHAR},
+                #{blog.content,jdbcType=VARCHAR},#{blog.status,jdbcType=INTEGER})
+    </insert>
+    <update id="updateByPrimaryKey">
+        UPDATE blog
+        SET create_time = #{blog.createTime,jdbcType=VARCHAR},
+            title = #{blog.title,jdbcType=VARCHAR},
+            content = #{blog.content,jdbcType=VARCHAR},
+            status = #{blog.status,jdbcType=INTEGER}
+        WHERE id=#{blog.id,jdbcType=INTEGER}
+    </update>
+    <update id="updateBlogByStatus">
+        update blog set status = #{status}
+        where id=#{blogId}
+    </update>
+
+    <select id="selectAllBySortId" resultMap="BaseResultMap">
+        SELECT blog.* FROM blog,sort_blog
+        WHERE sort_blog.sort_id=#{sortId}
+                AND sort_blog.blog_id=blog.id
+    </select>
+    <select id="selectOneByCommentId" resultMap="BaseResultMap">
+        SELECT blog.* FROM blog,blog_comment
+        WHERE blog.id=blog_comment.blog_id
+                AND blog_comment.comment_id=#{commentId}
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT * FROM blog
+    </select>
+    <select id="selectAllNormalBySortIdAndUserId" resultMap="BaseResultMap">
+        SELECT * FROM blog,user_blog,sort_blog
+        WHERE blog.id=sort_blog.blog_id
+                AND blog.id=user_blog.blog_id
+                AND sort_id=#{sortId}
+                AND user_id=#{userId}
+                AND blog.status in (1,2)
+    </select>
+    <select id="selectAllNormal" resultMap="BaseResultMap">
+        SELECT * FROM blog
+        WHERE status in (1,2)
+    </select>
+    <select id="selectAllNormalByUserId" resultMap="BaseResultMap">
+        SELECT * FROM blog,user_blog
+        WHERE user_blog.blog_id=blog.id
+                AND user_blog.user_id=#{userId}
+                AND blog.status in (1,2)
+    </select>
+    <select id="selectAllNormalBySortId" resultMap="BaseResultMap">
+        SELECT * FROM blog,sort_blog
+        WHERE blog.id=sort_blog.blog_id
+                AND blog.status in (1,2)
+                AND sort_blog.sort_id=#{sortId}
+    </select>
+    <select id="selectAllByUserId" resultMap="BaseResultMap">
+        SELECT * FROM blog,user_blog
+        WHERE user_blog.blog_id=blog.id
+                AND user_blog.user_id=#{userId}
+    </select>
+    <select id="selectAllForbiddenByUserId" resultMap="BaseResultMap">
+        select * from user_blog,sort_blog,blog
+        WHERE blog.id=user_blog.blog_id
+                AND blog.id=sort_blog.blog_id
+                AND user_blog.user_id=#{userId}
+                and blog.status=3
+    </select>
+    <select id="selectAllNeedChecked" resultMap="BaseResultMap">
+        select * from blog
+        where status=2
+    </select>
+    <select id="selectAllByStatus" resultMap="BaseResultMap">
+        select * from blog
+        where status=#{status}
+    </select>
+</mapper>

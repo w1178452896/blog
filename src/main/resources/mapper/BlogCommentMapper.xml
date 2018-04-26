@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.taylorsfan.blog.repository.BlogCommentMapper">
+    <insert id="insert">
+        INSERT INTO blog_comment (id,blog_id,comment_id)
+        VALUES (#{blogComment.id},#{blogComment.blogId,jdbcType=INTEGER},#{blogComment.commentId,jdbcType=INTEGER})
+    </insert>
+    <delete id="deleteByBlogId">
+        DELETE FROM blog_comment
+        WHERE id=#{blogId,jdbcType=INTEGER}
+    </delete>
+    <select id="countComment" resultType="integer">
+        SELECT count(*) commentCount FROM blog_comment
+        WHERE blog_id=#{id}
+    </select>
+</mapper>

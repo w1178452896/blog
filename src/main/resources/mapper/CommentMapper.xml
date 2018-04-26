@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.taylorsfan.blog.repository.CommentMapper">
+    <resultMap id="BaseResultMap" type="com.taylorsfan.blog.model.Comment">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="create_time" jdbcType="VARCHAR" property="createTime"/>
+        <result column="content" jdbcType="VARCHAR" property="content"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="parent_id" jdbcType="INTEGER" property="parentId"/>
+    </resultMap>
+    <select id="selectAllByStatus" resultMap="BaseResultMap">
+        SELECT * FROM comment
+        WHERE status=#{status}
+        ORDER BY create_time DESC
+    </select>
+    <select id="selectOneByPrimaryKey" resultMap="BaseResultMap">
+        SELECT * FROM comment
+        WHERE id=#{id}
+    </select>
+    <insert id="insert">
+        INSERT INTO comment (id,create_time,content,status,parent_id)
+        VALUES (#{comment.id},#{comment.createTime,jdbcType=VARCHAR},#{comment.content,jdbcType=VARCHAR},
+        #{comment.status,jdbcType=INTEGER},#{comment.parentId,jdbcType=INTEGER})
+    </insert>
+    <select id="selectAllByUserId" resultMap="BaseResultMap">
+        SELECT comment.* FROM comment,comment_user
+        WHERE comment_user.user_id=#{userId}
+        AND comment_user.comment_id=comment.id
+        ORDER BY create_time DESC
+    </select>
+    <select id="selectAllByBlogId" resultMap="BaseResultMap">
+        SELECT comment.* FROM comment,blog_comment
+        WHERE blog_comment.blog_id=#{blogId}
+        ORDER BY create_time DESC
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT * FROM comment
+    </select>
+    <select id="update">
+        UPDATE blog SET content = '根据相关政策，该评论不予显示！'
+        WHERE id=#{id}
+    </select>
+    <delete id="deleteByBlogId">
+        DELETE FROM comment
+        WHERE id IN (SELECT comment_id FROM blog_comment
+        WHERE blog_comment.blog_id=#{blogId})
+    </delete>
+    <update id="updateByCommentId">
+        UPDATE comment SET
+        content = '此评论已被删除'
+        WHERE id=#{commentId}
+    </update>
+    <update id="updateByUserId">
+        UPDATE comment SET
+        content = '此用户已被删除！'
+        WHERE id IN (SELECT comment_id FROM comment_user
+        WHERE user_id=#{userId})
+    </update>
+
+</mapper>

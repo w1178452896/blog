@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.taylorsfan.blog.repository.UserMapper">
+    <resultMap id="BaseResultMap" type="com.taylorsfan.blog.model.User">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="username" jdbcType="VARCHAR" property="username"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="mobile" jdbcType="VARCHAR" property="mobile"/>
+        <result column="sex" jdbcType="INTEGER" property="sex"/>
+        <result column="description" jdbcType="VARCHAR" property="description"/>
+        <result column="img_url" jdbcType="VARCHAR" property="imgUrl"/>
+        <result column="country" jdbcType="VARCHAR" property="country"/>
+        <result column="birthday" jdbcType="VARCHAR" property="birthday"/>
+    </resultMap>
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT * FROM user
+    </select>
+    <delete id="deleteByPrimaryKey">
+        DELETE FROM user
+        WHERE id=#{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" >
+        INSERT INTO user (id,username,password,email,mobile,sex,description,img_url,country,birthday)
+        VALUES (#{user.id},#{user.username,jdbcType=VARCHAR},#{user.password,jdbcType=VARCHAR},
+        #{user.email,jdbcType=VARCHAR},#{user.mobile,jdbcType=VARCHAR},#{user.sex,jdbcType=INTEGER},
+        #{user.description,jdbcType=VARCHAR},#{user.imgUrl,jdbcType=VARCHAR},#{user.country,jdbcType=VARCHAR},
+        #{user.birthday,jdbcType=VARCHAR})
+    </insert>
+    <update id="updateByPrimaryKey">
+        UPDATE user
+        SET username = #{user.username},
+        password = #{user.password},
+        email = #{user.email},
+        mobile = #{user.mobile},
+        sex = #{user.sex},
+        description = #{user.description},
+        img_url = #{user.imgUrl},
+        country = #{user.country},
+        birthday = #{user.birthday}
+        WHERE id=#{user.id}
+    </update>
+    <select id="selectOneByPrimaryKey" resultMap="BaseResultMap">
+        SELECT * FROM user
+        WHERE id=#{id,jdbcType=INTEGER}
+    </select>
+    <select id="selectOneByUsername" resultMap="BaseResultMap">
+        SELECT * FROM user
+        WHERE username=#{username}
+    </select>
+    <select id="selectOneByUserNameAndPassword" resultMap="BaseResultMap">
+        SELECT * FROM user
+        WHERE username=#{username} AND password=#{password}
+    </select>
+    <select id="selectOneByBlogId" resultMap="BaseResultMap">
+        SELECT user.* FROM user,user_blog
+        WHERE user.id=user_blog.user_id AND user_blog.blog_id=#{blogId} AND user_blog.user_id=user.id
+    </select>
+    <select id="selectOneByCommentId" resultMap="BaseResultMap">
+        SELECT user.* FROM user,user_comment
+        WHERE user.id=user_comment.user_id AND user_comment.comment_id=#{commentId}
+    </select>
+    <select id="selectAllByFanId" resultMap="BaseResultMap">
+        SELECT user.* FROM user,user_fan
+        WHERE user_fan.user_id=#{fanId} AND user.id=user_fan.user_id
+    </select>
+    <select id="selectAllByFocusId" resultMap="BaseResultMap">
+        SELECT user.* FROM user,user_focus
+        WHERE user_focus.user_id=#{focusId} AND user.id=user_focus.user_id
+    </select>
+    <update id="updateByPrimaryKeyPassword2Null">
+        UPDATE user SET password = NULL
+        WHERE id=#{id}
+    </update>
+
+</mapper>

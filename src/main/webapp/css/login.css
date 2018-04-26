@@ -1,0 +1,56 @@
+.sign {
+  padding: 40px 0 30px  50px;
+}
+body {
+  background: #f1f1f1;
+}
+.main {
+  width: 400px;
+  height: 500px;
+  background: #ffffff;
+  padding: 50px 50px 30px;
+  margin: 0 auto;
+  box-shadow: 0 0 8px rgba(0,0,0,.2);
+  border-radius: 5px;
+}
+.title a {
+  color: #969696;
+  display: inline-block;
+  padding-bottom: 10px;
+  margin: 0 25px;
+  text-decoration: none;
+}
+.fss {
+  position: absolute;
+  top: 0px;
+  height: 100%;
+  width: 100%;
+  z-index: -10;
+}
+.sign a, .sign a:hover {
+  color: #ffffff;
+}
+.sign a:hover{
+  text-decoration: none;
+  color: #f69581;
+}
+.title a:hover {
+  border-bottom: solid 3px #e88645;
+}
+@media screen and (max-width: 768px) {
+  body {
+    background: #ffffff;
+  }
+  .main {
+    box-shadow: none;
+  }
+  .fss {
+    display: none;
+  }
+}
+.sign-container {
+  padding-top: 50px;
+}
+.img-rounded {
+  border: solid 1px #bfbfbf;
+}

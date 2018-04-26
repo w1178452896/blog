@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <script src="../js/jquery-3.3.1.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/fss.js"></script>
+    <script src="../js/fssSet.js"></script>
+    <link rel="stylesheet" href="../css/login.css">
+    <title>登录</title>
+    <style>
+        .title a[title=login] {
+            color: #e88645;
+            border-bottom: solid 3px #e88645;
+        }
+    </style>
+</head>
+<body onload="fssSet();">
+<div class="sign hidden-xs">
+    <h1><b><a href="/">Blog</a></b></h1>
+</div>
+<div class="main">
+    <div class="title text-center">
+        <h4>
+            <span><a href="#" title="login">登录</a></span>
+            <b>|</b>
+            <span><a href="register.html" title="register">注册</a></span>
+        </h4>
+    </div>
+    <div class="sign-container">
+        <div class="container-fluid">
+            <form>
+                <div class="input-group">
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+                    <input type="text" name="username" class="form-control input-lg" placeholder="Username">
+                </div>
+                <br>
+                <div class="input-group">
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
+                    <input type="password" name="password" class="form-control input-lg" placeholder="Password">
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-xs-7" style="padding-right: 0">
+                        <input type="text" name="code" class="form-control input-lg" placeholder="验证码">
+                    </div>
+                    <div class="col-xs-5" style="padding-left: 10px">
+                        <img id="veryCode" src="/veryCode" class="img-rounded" alt="加载验证码失败" width="99px" height="44px" onclick="changeImg()"/>
+                    </div>
+                </div>
+                <div class="checkbox">
+                    <br>
+                    <label>
+                        <input type="checkbox"> 记住我
+                    </label>
+                </div>
+                <br>
+                <input type="button" value="登录" name="login" class="btn btn-lg btn-primary btn-block"/>
+            </form>
+        </div>
+    </div>
+</div>
+<div id="container" class="fss">
+    <div id="output" class="fss">
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" id="myModel">
+    <div class="modal-dialog modal-sm" style="top: 300px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h5 class="modal-title">提示</h5>
+            </div>
+            <div class="modal-body">
+                <p id="modalBody"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">确定</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        function openalert(message) {
+            $('#modalBody').html(message);
+            $('#myModel').modal();
+        }
+    </script>
+</div>
+</body>
+<script>
+    function changeImg(){
+        var img = document.getElementById("veryCode");
+        img.src = "/veryCode?date=" + new Date();
+    }
+
+    $("input[name=login]").click(function () {
+        $.ajax({
+            url: "/user/login",
+            type: "get",
+            data: {
+                username: $("input[name=username]").val(),
+                password: $("input[name=password]").val(),
+                code : $("input[name=code]").val().toLowerCase()
+            },
+            success: function (data) {
+                if (data.code === 200) {
+                    window.location.href = "/";
+                }
+                else{
+                    openalert('登录失败请重试');
+                    $('#myModel button:last-child').click(function () {
+                        changeImg();
+                    });
+                }
+            }
+        });
+    });
+</script>
+</html>

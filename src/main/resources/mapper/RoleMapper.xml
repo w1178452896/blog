@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.taylorsfan.blog.repository.RoleMapper">
+    <resultMap id="BaseResultMap" type="com.taylorsfan.blog.model.Role">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="role_name" jdbcType="VARCHAR" property="roleName"/>
+    </resultMap>
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT * FROM role
+    </select>
+    <select id="selectOneByPrimaryKey" resultMap="BaseResultMap">
+        SELECT * FROM role
+        WHERE id=#{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey">
+        DELETE FROM role
+        WHERE id=#{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" >
+        INSERT INTO role (id,role_name)
+        VALUES (#{role.id},#{role.roleName,jdbcType=VARCHAR})
+    </insert>
+    <update id="updateByPrimaryKey">
+        UPDATE role
+        SET role_name = #{role.roleName,jdbcType=VARCHAR}
+        WHERE id=#{role.id,jdbcType=INTEGER}
+    </update>
+    <select id="selectAllByUserId" resultMap="BaseResultMap">
+        SELECT role.* FROM role,user_role
+        WHERE user_id=#{userId} AND user_role.role_id=role.id
+    </select>
+</mapper>
